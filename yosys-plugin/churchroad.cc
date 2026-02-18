@@ -288,7 +288,7 @@ struct LakeroadWorker
 
 				out_expr = concat_expr;
 			}
-			else if (sig.chunks().size() == 1 && sig.chunks()[0].wire->width != sig.size())
+			else if (sig.chunks().size() == 1 && sig.as_chunk().wire->width != sig.size())
 			{
 				// This branch is meant to capture the case where the signal is a
 				// slice/extraction. I'm not quite sure how to check this in Yosys
@@ -298,7 +298,7 @@ struct LakeroadWorker
 				// that this is the only possible case that's left. That would be nice.
 				// Currently, the condition in this else if branch is a little messy.
 
-				auto chunk = sig.chunks()[0];
+				auto chunk = sig.as_chunk();
 
 				if (chunk.wire->upto)
 				{
@@ -307,7 +307,7 @@ struct LakeroadWorker
 				}
 
 				// The let-bound ID string of the expression to extract from.
-				auto extract_from_expr = get_expression_for_signal(sig.chunks()[0].wire, -1);
+				auto extract_from_expr = get_expression_for_signal(sig.as_chunk().wire, -1);
 				auto new_id = get_new_id_str();
 				auto extract_expr = stringf("(Op1 (Extract %d %d) %s)", (chunk.offset + chunk.width - 1) + chunk.wire->start_offset,
 																		chunk.offset + chunk.wire->start_offset, extract_from_expr.c_str());
